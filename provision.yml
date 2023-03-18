@@ -1,0 +1,103 @@
+---
+- name: Установка Docker, Docker  Compose, Node Exporter,
+  hosts: all
+  become: true
+  become_method: sudo
+  vars:
+    prereq_pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+
+  tasks:
+    - name: Установим пакеты необходимые для установки Docker
+      apt:
+        update_cache: yes
+        pkg: "{{prereq_pkg}}"
+        state: present
+
+    - name: Добавим GPG ключ репозитория Docker
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Прописываем репозиторий Docker
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Обновим кэш apt и установим docker-ce
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: true
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+        state: present
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker-compose
+        state: present
+
+    # - name: Установим docker-compose
+    #   get_url:
+    #     url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+    #     dest: /usr/local/bin/docker-compose
+    #     mode: "755"
+
+    - name: Установим node exporter
+      get_url:
+        url: https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
+        dest: /tmp
+
+    - name: Разархивируем node exporter
+      unarchive:
+        remote_src: yes
+        src: /tmp/node_exporter-1.5.0.linux-amd64.tar.gz
+        dest: /tmp
+
+    - name: Перемещаем разархивированный node exporter в /usr/local/bin
+      copy:
+        src: /tmp/node_exporter-1.5.0.linux-amd64/node_exporter
+        dest: /usr/local/bin/node_exporter
+        remote_src: yes
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Создадим systemd unit файл
+      template:
+        src: node_exporter.service.j2
+        dest: /etc/systemd/system/node_exporter.service
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: Запустим созданный сервис node exporter
+      systemd:
+        daemon_reload: yes
+        enabled: yes
+        state: started
+        name: node_exporter.service
+
+    - name: Create a directory if it does not exist
+      file:
+        path: /opt/prometheus
+        state: directory
+
+    - name: copy Docker Compose files
+      template:
+        src: docker_compose.j2
+        dest: /opt/prometheus/docker-compose.yml
+
+    - name: deploy Docker Compose stack
+      docker_compose:
+        project_src: /opt/prometheus
+        files: docker-compose.yml
