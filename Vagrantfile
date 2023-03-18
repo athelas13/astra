@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 Vagrant.configure("2") do |config|
   # Образ виртуальной машины с Vagrant Cloud
-  config.vm.box = "ubuntu/focal64"
+  config.vm.box = "generic/ubuntu2004"
   # # Настроим размер жесткого диска
   # config.disksize.size = '20GB'
   # Настройки виртуальной машины и выбор провайдера
