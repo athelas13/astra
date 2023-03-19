@@ -92,12 +92,17 @@
         path: /opt/prometheus
         state: directory
 
-    - name: copy Docker Compose files
+    - name: Создадим Docker Compose файл из шаблона
       template:
         src: docker_compose.j2
         dest: /opt/prometheus/docker-compose.yml
 
-    - name: deploy Docker Compose stack
+    - name: Создадим файл настроек Prometheus из шаблона
+      template:
+        src: prometheus.j2
+        dest: /opt/prometheus/prometheus.yml
+
+    - name: Запустим контейнеры описанные в Docker Compose
       docker_compose:
         project_src: /opt/prometheus
         files: docker-compose.yml
