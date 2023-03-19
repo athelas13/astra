@@ -40,11 +40,13 @@
       pip:
         name: docker
         state: present
+      ignore_errors: yes
 
     - name: Install Docker Module for Python
       pip:
         name: docker-compose
         state: present
+      ignore_errors: yes
 
     # - name: Установим docker-compose
     #   get_url:
@@ -101,6 +103,31 @@
       template:
         src: prometheus.j2
         dest: /opt/prometheus/prometheus.yml
+
+    - name: Create a directory if it does not exist
+      file:
+        path: /opt/prometheus/grafana/provisioning/datasources/
+        state: directory
+
+    - name: Создадим файл настроек источника  данных для grafana из шаблона
+      template:
+        src: prometheus_datasource.j2
+        dest: /opt/prometheus/grafana/provisioning/datasources/prometheus_datasource.yml
+
+    - name: Create a directory if it does not exist
+      file:
+        path: /opt/prometheus/grafana/provisioning/dashboards/
+        state: directory
+
+    - name: Создадим файл дефолтного дашборда для grafana из шаблона
+      template:
+        src: default_dashboard.j2
+        dest: /opt/prometheus/grafana/provisioning/dashboards/default_dashboard.yml
+
+    - name: Подсовываем шаблон дашборда 1860 скачанный с офф сайта
+      copy:
+        src: node-exporter-full_rev30.json
+        dest: /opt/prometheus/grafana/provisioning/dashboards/node-exporter-full_rev30.json
 
     - name: Запустим контейнеры описанные в Docker Compose
       docker_compose:
