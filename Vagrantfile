@@ -3,8 +3,6 @@
 Vagrant.configure("2") do |config|
   # Образ виртуальной машины с Vagrant Cloud
   config.vm.box = "generic/ubuntu2004"
-  # # Настроим размер жесткого диска
-  # config.disksize.size = '20GB'
   # Настройки виртуальной машины и выбор провайдера
   config.vm.provider "virtualbox" do |vb|
     vb.name = "Prometheus1"
@@ -16,12 +14,10 @@ Vagrant.configure("2") do |config|
     vb.cpus = 2
   end
   config.vm.hostname = "Prometheus1"
-#config.vm.synced_folder ".", "/home/vagrant/code",
-#owner: "www-data", group: "www-data"
-# Переброс портов
+# Проброс портов
   config.vm.network "forwarded_port", guest: 3000, host: 3000
-  config.vm.network "forwarded_port", guest: 9090, host: 9090
-  config.vm.network "forwarded_port", guest: 9100, host: 9100
+#  config.vm.network "forwarded_port", guest: 9090, host: 9090
+#  config.vm.network "forwarded_port", guest: 9100, host: 9100
 # Команда для настройки сети
   config.vm.network "private_network", ip: "192.168.56.1"
 # Настройка VM после создания Ansible.
