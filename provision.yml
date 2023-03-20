@@ -20,17 +20,17 @@
         pkg: "{{prereq_pkg}}"
         state: present
 
-    - name: Добавим GPG ключ репозитория Docker
+    - name: Скачаем и добавим GPG ключ репозитория Docker
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
-    - name: Прописываем репозиторий Docker
+    - name: Добавим официальный репозиторий Docker
       apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu focal stable
         state: present
 
-    - name: Обновим кэш apt и установим docker-ce
+    - name: Обновим кэш apt и установим Docker
       apt:
         name: docker-ce
         state: present
@@ -48,7 +48,7 @@
         state: present
       ignore_errors: yes
 
-    - name: Установим node exporter
+    - name: Скачаем node exporter с GitHub
       get_url:
         url: https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
         dest: /tmp
@@ -83,7 +83,7 @@
         state: started
         name: node_exporter.service
 
-    - name: Созададим рабочую директорию для Docker Compose Prometheus Grafana
+    - name: Создадим рабочую директорию для Docker Compose, Prometheus, Grafana
       file:
         path: /opt/prometheus
         state: directory
@@ -98,12 +98,12 @@
         src: prometheus.j2
         dest: /opt/prometheus/prometheus.yml
 
-    - name: Создадим директорию для првиженинга датасурсов в графане
+    - name: Создадим директорию для првиженинга датасурсов в Grafana
       file:
         path: /opt/prometheus/grafana/provisioning/datasources/
         state: directory
 
-    - name: Создадим файл настроек источника  данных для grafana из шаблона
+    - name: Создадим файл настроек источника  данных для Grafana из шаблона
       template:
         src: prometheus_datasource.j2
         dest: /opt/prometheus/grafana/provisioning/datasources/prometheus_datasource.yml
@@ -113,17 +113,17 @@
         path: /opt/prometheus/grafana/provisioning/dashboards/
         state: directory
 
-    - name: Создадим файл дефолтного дашборда для grafana из шаблона
+    - name: Создадим файл дефолтного дашборда для Grafana из шаблона
       template:
         src: default_dashboard.j2
         dest: /opt/prometheus/grafana/provisioning/dashboards/default_dashboard.yml
 
-    - name: Подсовываем шаблон дашборда 1860 скачанный с офф сайта
+    - name: Подсовываем шаблон дашборда 1860 с офф сайта Grafana
       copy:
         src: node-exporter-full_rev30.json
         dest: /opt/prometheus/grafana/provisioning/dashboards/node-exporter-full_rev30.json
 
-    - name: Запустим контейнеры описанные в Docker Compose
+    - name: Запустим контейнеры Docker Compose
       docker_compose:
         project_src: /opt/prometheus
         files: docker-compose.yml
