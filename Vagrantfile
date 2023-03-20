@@ -3,14 +3,15 @@
 Vagrant.configure("2") do |config|
   # Образ виртуальной машины с Vagrant Cloud
   config.vm.box = "generic/ubuntu2004"
-  # Настройки виртуальной машины и выбор провайдера
+  # Зададим провайдера
   config.vm.provider "virtualbox" do |vb|
+  # Имя ВМ
     vb.name = "Prometheus1"
-  # Отключаем интерфейс, он не понадобится
+  # Для экономии ресурсов отключим GUI
     vb.gui = false
-  # 2 Гб оперативной памяти
+  # ОЗУ - 2 Гб
     vb.memory = "2048"
-  # Одноядерный процессор
+  # CPU - 2 ядра
     vb.cpus = 2
   end
   config.vm.hostname = "Prometheus1"
