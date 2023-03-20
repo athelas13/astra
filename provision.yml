@@ -36,13 +36,13 @@
         state: present
         update_cache: true
 
-    - name: Install Docker Module for Python
+    - name: Установим Docker
       pip:
         name: docker
         state: present
       ignore_errors: yes
 
-    - name: Install Docker Module for Python
+    - name: Установим Docker Compose
       pip:
         name: docker-compose
         state: present
@@ -83,7 +83,7 @@
         state: started
         name: node_exporter.service
 
-    - name: Create a directory if it does not exist
+    - name: Созададим рабочую директорию для Docker Compose Prometheus Grafana
       file:
         path: /opt/prometheus
         state: directory
@@ -98,7 +98,7 @@
         src: prometheus.j2
         dest: /opt/prometheus/prometheus.yml
 
-    - name: Create a directory if it does not exist
+    - name: Создадим директорию для првиженинга датасурсов в графане
       file:
         path: /opt/prometheus/grafana/provisioning/datasources/
         state: directory
@@ -108,7 +108,7 @@
         src: prometheus_datasource.j2
         dest: /opt/prometheus/grafana/provisioning/datasources/prometheus_datasource.yml
 
-    - name: Create a directory if it does not exist
+    - name: Создадим директорию для првиженинга дашбордов в графане
       file:
         path: /opt/prometheus/grafana/provisioning/dashboards/
         state: directory
