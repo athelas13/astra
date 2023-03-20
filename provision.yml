@@ -48,12 +48,6 @@
         state: present
       ignore_errors: yes
 
-    # - name: Установим docker-compose
-    #   get_url:
-    #     url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
-    #     dest: /usr/local/bin/docker-compose
-    #     mode: "755"
-
     - name: Установим node exporter
       get_url:
         url: https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
