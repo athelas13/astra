@@ -14,6 +14,7 @@
       - python3-setuptools
 
   tasks:
+
     - name: Установим пакеты необходимые для установки Docker
       apt:
         update_cache: yes
@@ -59,13 +60,20 @@
         src: /tmp/node_exporter-1.5.0.linux-amd64.tar.gz
         dest: /tmp
 
+    - name: Создадим пользователя node_exporter
+      user:
+        name: node_exporter
+        comment: node_exporter
+        system: true
+        create_home: false
+
     - name: Перемещаем разархивированный node exporter в /usr/local/bin
       copy:
         src: /tmp/node_exporter-1.5.0.linux-amd64/node_exporter
         dest: /usr/local/bin/node_exporter
         remote_src: yes
-        owner: root
-        group: root
+        owner: node_exporter
+        group: node_exporter
         mode: 0755
 
     - name: Создадим systemd unit файл
