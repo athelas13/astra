@@ -12,6 +12,21 @@
       - python3-pip
       - virtualenv
       - python3-setuptools
+      - mc
+      - htop
+      # - ntopng
+      - traceroute
+      - ncdu
+      - iftop
+      - jq
+      - tcpdump
+      - iotop
+      - wget
+      - rsync
+      - vim
+      - parted
+      - gnupg
+      - sysstat
 
   tasks:
 
