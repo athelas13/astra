@@ -81,6 +81,7 @@
         comment: node_exporter
         system: true
         create_home: false
+        shell: /usr/sbin/nologin
 
     - name: Перемещаем разархивированный node exporter в /usr/local/bin
       copy:
